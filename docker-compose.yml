@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  dosee-db:
+    image: postgres:15
+    container_name: dosee-db
+    environment:
+      POSTGRES_USER: dosee_user
+      POSTGRES_PASSWORD: dosee_password
+      POSTGRES_DB: dosee_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - dosee-db-data-prisma:/var/lib/postgresql/data
+
+volumes:
+  dosee-db-data-prisma:
