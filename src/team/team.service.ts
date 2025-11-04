@@ -1,23 +1,23 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, InternalServerErrorException } from '@nestjs/common'
 import { CreateTeamDto } from './dto/create-team.dto'
 import { UpdateTeamDto } from './dto/update-team.dto'
+import { PrismaService } from 'src/prisma/prisma.service'
 
 @Injectable()
 export class TeamService {
+  constructor(private prismaService: PrismaService) {}
 
-
-  create(dto: CreateTeamDto) {
+  async create(dto: CreateTeamDto) {
     try {
-      return 'create team member'
+      return this.prismaService.team.create({ data: dto })
     } catch (error) {
       console.error('Erro ao criar Team:', error)
-      throw error
+      throw new InternalServerErrorException('Erro ao criar Team')
     }
   }
 
   findAll() {
-    // return this.prisma.find()
-    return null
+    return this.prismaService.team.findMany()
   }
 
   findOne(id: string) {
