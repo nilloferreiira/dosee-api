@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, NotFoundException } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpCode,
+  InternalServerErrorException
+} from '@nestjs/common'
 import { TeamService } from './team.service'
 import { CreateTeamDto } from './dto/create-team.dto'
 import { UpdateTeamDto } from './dto/update-team.dto'
@@ -18,23 +28,30 @@ export class TeamController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const teamMember = await this.teamService.findOne(id)
-    if (!teamMember) throw new NotFoundException()
-    return teamMember
+  async findOne(@Param('id') id: number) {
+    try {
+      return await this.teamService.findOne(id)
+    } catch (error) {
+      throw new InternalServerErrorException('Erro ao buscar o membro do time')
+    }
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateTeamDto: UpdateTeamDto) {
-    const teamMember = await this.teamService.update(id, updateTeamDto)
-    if (!teamMember) throw new NotFoundException()
-    return teamMember
+  async update(@Param('id') id: number, @Body() updateTeamDto: UpdateTeamDto) {
+    try {
+      return await this.teamService.update(id, updateTeamDto)
+    } catch (error) {
+      throw new InternalServerErrorException('Erro ao atualizar o membro do time')
+    }
   }
 
   @Delete(':id')
   @HttpCode(204)
-  async remove(@Param('id') id: string) {
-    const teamMember = await this.teamService.remove(id)
-    if (!teamMember) throw new NotFoundException()
+  async remove(@Param('id') id: number) {
+    try {
+      return await this.teamService.softDelete(id)
+    } catch (error) {
+      throw new InternalServerErrorException('Erro ao deletar o membro do time')
+    }
   }
 }
