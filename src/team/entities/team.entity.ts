@@ -1,5 +1,5 @@
 export class Team {
-  id: string
+  id: number
   name: string
   role: string
   photoUrl?: string
